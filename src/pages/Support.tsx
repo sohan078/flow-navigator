@@ -210,7 +210,7 @@ export default function Support() {
               <CardContent>
                 {submitted ? (
                   <div className="text-center py-8">
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                    <CheckCircle className="h-12 w-12 text-primary mx-auto mb-4" />
                     <p className="font-semibold mb-2">Thank you!</p>
                     <p className="text-sm text-muted-foreground">We'll be in touch soon.</p>
                   </div>
