@@ -24,8 +24,8 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 const faqItems = [
   {
     id: "1",
-    question: "What is GrowthPal?",
-    answer: "GrowthPal is a comprehensive business intelligence platform designed to help growth teams track mandates, manage pipelines, monitor competitors, and organize projects and deliverables in one centralized location.",
+    question: "What is DataVision?",
+    answer: "DataVision is a comprehensive business intelligence platform designed to help growth teams track mandates, manage pipelines, monitor competitors, and organize projects and deliverables in one centralized location.",
   },
   {
     id: "2",
