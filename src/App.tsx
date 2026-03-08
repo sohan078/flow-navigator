@@ -10,6 +10,7 @@ import CreateMandate from "./pages/CreateMandate";
 import MandateDetail from "./pages/MandateDetail";
 import CompanyProfile from "./pages/CompanyProfile";
 import PipelineCRM from "./pages/PipelineCRM";
+import Watchlist from "./pages/Watchlist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
