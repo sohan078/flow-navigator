@@ -35,7 +35,10 @@ const App = () => (
           <Route path="/mandates/create" element={<AppLayout><CreateMandate /></AppLayout>} />
           <Route path="/mandates/:id" element={<AppLayout><MandateDetail /></AppLayout>} />
           <Route path="/companies/:id" element={<AppLayout><CompanyProfile /></AppLayout>} />
+          <Route path="/compare" element={<AppLayout><CompareCompanies /></AppLayout>} />
           <Route path="/pipeline" element={<AppLayout><PipelineCRM /></AppLayout>} />
+          <Route path="/analytics" element={<AppLayout><Analytics /></AppLayout>} />
+          <Route path="/activity" element={<AppLayout><ActivityTimeline /></AppLayout>} />
           <Route path="/watchlist" element={<AppLayout><Watchlist /></AppLayout>} />
           <Route path="/projects" element={<AppLayout><Projects /></AppLayout>} />
           <Route path="/deliverables" element={<AppLayout><Deliverables /></AppLayout>} />
