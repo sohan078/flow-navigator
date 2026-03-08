@@ -67,7 +67,7 @@ const faqItems = [
 const documentationLinks = [
   {
     title: "Getting Started",
-    description: "Learn the basics of using GrowthPal",
+    description: "Learn the basics of using DataVision",
     url: "#",
     icon: "📘",
   },
