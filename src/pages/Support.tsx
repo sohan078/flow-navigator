@@ -24,8 +24,8 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 const faqItems = [
   {
     id: "1",
-    question: "What is GrowthPal?",
-    answer: "GrowthPal is a comprehensive business intelligence platform designed to help growth teams track mandates, manage pipelines, monitor competitors, and organize projects and deliverables in one centralized location.",
+    question: "What is DataVision?",
+    answer: "DataVision is a comprehensive business intelligence platform designed to help growth teams track mandates, manage pipelines, monitor competitors, and organize projects and deliverables in one centralized location.",
   },
   {
     id: "2",
@@ -35,7 +35,7 @@ const faqItems = [
   {
     id: "3",
     question: "Can I track multiple companies at once?",
-    answer: "Yes! GrowthPal is designed for tracking multiple companies across different stages. Use the Watchlist for monitoring competitors, the Pipeline/CRM for deal tracking, and create mandates for each company you're working with.",
+    answer: "Yes! DataVision is designed for tracking multiple companies across different stages. Use the Watchlist for monitoring competitors, the Pipeline/CRM for deal tracking, and create mandates for each company you're working with.",
   },
   {
     id: "4",
@@ -55,19 +55,19 @@ const faqItems = [
   {
     id: "7",
     question: "What deliverable templates are available?",
-    answer: "GrowthPal provides 6 standard templates: Investment Memo, Teaser Profile, Executive Summary, Financial Model, Due Diligence Report, and Term Sheet. You can create new deliverables from these templates.",
+    answer: "DataVision provides 6 standard templates: Investment Memo, Teaser Profile, Executive Summary, Financial Model, Due Diligence Report, and Term Sheet. You can create new deliverables from these templates.",
   },
   {
     id: "8",
     question: "Can I export my data?",
-    answer: "Yes, you can export data from most sections of GrowthPal. Look for the export option in table headers or use your browser's built-in save functionality.",
+    answer: "Yes, you can export data from most sections of DataVision. Look for the export option in table headers or use your browser's built-in save functionality.",
   },
 ];
 
 const documentationLinks = [
   {
     title: "Getting Started",
-    description: "Learn the basics of using GrowthPal",
+    description: "Learn the basics of using DataVision",
     url: "#",
     icon: "📘",
   },
@@ -155,7 +155,7 @@ export default function Support() {
                 <Mail className="h-6 w-6 text-primary shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold mb-1">Email Support</h3>
-                  <p className="text-sm text-muted-foreground">support@growthpal.io</p>
+                  <p className="text-sm text-muted-foreground">support@datavision.io</p>
                 </div>
               </div>
             </CardContent>

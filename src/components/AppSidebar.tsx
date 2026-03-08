@@ -32,7 +32,7 @@ export function AppSidebar() {
             G
           </div>
           {!collapsed && (
-            <span className="font-bold text-lg text-foreground">GrowthPal</span>
+            <span className="font-bold text-lg text-foreground">DataVision</span>
           )}
         </div>
       </SidebarHeader>
