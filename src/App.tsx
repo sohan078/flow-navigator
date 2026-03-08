@@ -25,21 +25,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppLayout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/mandates" element={<MandatesDashboard />} />
-            <Route path="/mandates/create" element={<CreateMandate />} />
-            <Route path="/mandates/:id" element={<MandateDetail />} />
-            <Route path="/companies/:id" element={<CompanyProfile />} />
-            <Route path="/pipeline" element={<PipelineCRM />} />
-            <Route path="/watchlist" element={<Watchlist />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/deliverables" element={<Deliverables />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AppLayout>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route element={<AppLayout><Dashboard /></AppLayout>} path="/" />
+          <Route path="/mandates" element={<AppLayout><MandatesDashboard /></AppLayout>} />
+          <Route path="/mandates/create" element={<AppLayout><CreateMandate /></AppLayout>} />
+          <Route path="/mandates/:id" element={<AppLayout><MandateDetail /></AppLayout>} />
+          <Route path="/companies/:id" element={<AppLayout><CompanyProfile /></AppLayout>} />
+          <Route path="/pipeline" element={<AppLayout><PipelineCRM /></AppLayout>} />
+          <Route path="/watchlist" element={<AppLayout><Watchlist /></AppLayout>} />
+          <Route path="/projects" element={<AppLayout><Projects /></AppLayout>} />
+          <Route path="/deliverables" element={<AppLayout><Deliverables /></AppLayout>} />
+          <Route path="/support" element={<AppLayout><Support /></AppLayout>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
