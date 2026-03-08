@@ -34,6 +34,7 @@ const App = () => (
             <Route path="/watchlist" element={<Watchlist />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/deliverables" element={<Deliverables />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
       </BrowserRouter>
