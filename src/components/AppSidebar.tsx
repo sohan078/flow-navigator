@@ -1,5 +1,6 @@
 import {
-  Home, FileText, GitBranch, FolderOpen, Package, Eye, HelpCircle
+  Home, FileText, GitBranch, FolderOpen, Package, Eye, HelpCircle,
+  BarChart3, Clock, ArrowLeftRight,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -13,6 +14,9 @@ const navItems = [
   { title: "Home", url: "/", icon: Home },
   { title: "Mandates", url: "/mandates", icon: FileText },
   { title: "Pipeline / CRM", url: "/pipeline", icon: GitBranch },
+  { title: "Compare", url: "/compare", icon: ArrowLeftRight },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Activity", url: "/activity", icon: Clock },
   { title: "Projects", url: "/projects", icon: FolderOpen },
   { title: "Deliverables", url: "/deliverables", icon: Package },
   { title: "Watchlist", url: "/watchlist", icon: Eye },
