@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/mandates/create" element={<CreateMandate />} />
             <Route path="/mandates/:id" element={<MandateDetail />} />
             <Route path="/companies/:id" element={<CompanyProfile />} />
+            <Route path="/pipeline" element={<PipelineCRM />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
