@@ -60,7 +60,7 @@ const faqItems = [
   {
     id: "8",
     question: "Can I export my data?",
-    answer: "Yes, you can export data from most sections of GrowthPal. Look for the export option in table headers or use your browser's built-in save functionality.",
+    answer: "Yes, you can export data from most sections of DataVision. Look for the export option in table headers or use your browser's built-in save functionality.",
   },
 ];
 
