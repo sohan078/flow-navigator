@@ -11,6 +11,8 @@ import MandateDetail from "./pages/MandateDetail";
 import CompanyProfile from "./pages/CompanyProfile";
 import PipelineCRM from "./pages/PipelineCRM";
 import Watchlist from "./pages/Watchlist";
+import Projects from "./pages/Projects";
+import Deliverables from "./pages/Deliverables";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/companies/:id" element={<CompanyProfile />} />
             <Route path="/pipeline" element={<PipelineCRM />} />
             <Route path="/watchlist" element={<Watchlist />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/deliverables" element={<Deliverables />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
