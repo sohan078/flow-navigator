@@ -13,6 +13,7 @@ import PipelineCRM from "./pages/PipelineCRM";
 import Watchlist from "./pages/Watchlist";
 import Projects from "./pages/Projects";
 import Deliverables from "./pages/Deliverables";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
