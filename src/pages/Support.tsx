@@ -55,7 +55,7 @@ const faqItems = [
   {
     id: "7",
     question: "What deliverable templates are available?",
-    answer: "GrowthPal provides 6 standard templates: Investment Memo, Teaser Profile, Executive Summary, Financial Model, Due Diligence Report, and Term Sheet. You can create new deliverables from these templates.",
+    answer: "DataVision provides 6 standard templates: Investment Memo, Teaser Profile, Executive Summary, Financial Model, Due Diligence Report, and Term Sheet. You can create new deliverables from these templates.",
   },
   {
     id: "8",
