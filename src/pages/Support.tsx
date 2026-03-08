@@ -155,7 +155,7 @@ export default function Support() {
                 <Mail className="h-6 w-6 text-primary shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold mb-1">Email Support</h3>
-                  <p className="text-sm text-muted-foreground">support@growthpal.io</p>
+                  <p className="text-sm text-muted-foreground">support@datavision.io</p>
                 </div>
               </div>
             </CardContent>
