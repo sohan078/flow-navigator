@@ -32,7 +32,8 @@ const App = () => (
             <Route path="/companies/:id" element={<CompanyProfile />} />
             <Route path="/pipeline" element={<PipelineCRM />} />
             <Route path="/watchlist" element={<Watchlist />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/deliverables" element={<Deliverables />} />
           </Routes>
         </AppLayout>
       </BrowserRouter>
