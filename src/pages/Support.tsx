@@ -35,7 +35,7 @@ const faqItems = [
   {
     id: "3",
     question: "Can I track multiple companies at once?",
-    answer: "Yes! GrowthPal is designed for tracking multiple companies across different stages. Use the Watchlist for monitoring competitors, the Pipeline/CRM for deal tracking, and create mandates for each company you're working with.",
+    answer: "Yes! DataVision is designed for tracking multiple companies across different stages. Use the Watchlist for monitoring competitors, the Pipeline/CRM for deal tracking, and create mandates for each company you're working with.",
   },
   {
     id: "4",
