@@ -20,6 +20,7 @@ const navItems = [
   { title: "Projects", url: "/projects", icon: FolderOpen },
   { title: "Deliverables", url: "/deliverables", icon: Package },
   { title: "Watchlist", url: "/watchlist", icon: Eye },
+  { title: "API Integrations", url: "/api-integrations", icon: Plug },
   { title: "Support", url: "/support", icon: HelpCircle },
 ];
 

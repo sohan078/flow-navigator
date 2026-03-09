@@ -44,6 +44,7 @@ const App = () => (
           <Route path="/projects" element={<AppLayout><Projects /></AppLayout>} />
           <Route path="/deliverables" element={<AppLayout><Deliverables /></AppLayout>} />
           <Route path="/support" element={<AppLayout><Support /></AppLayout>} />
+          <Route path="/api-integrations" element={<AppLayout><ApiIntegrations /></AppLayout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
