@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
 type Priority = "critical" | "high" | "medium" | "nice-to-have";
-type Category = "data" | "ai" | "communication" | "payments" | "auth" | "infrastructure" | "analytics" | "compliance";
+type Category = "data" | "ai" | "communication" | "payments" | "auth" | "infrastructure" | "analytics" | "compliance" | "backend";
 
 interface ApiIntegration {
   name: string;
