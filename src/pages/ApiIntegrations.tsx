@@ -3,7 +3,8 @@ import {
   Search, Shield, Database, Brain, Mail, CreditCard, FileText,
   Globe, MessageSquare, BarChart3, Users, Zap, Lock, Cloud,
   ArrowUpRight, CheckCircle2, AlertCircle, Star, Layers,
-  Activity, Eye, Webhook, Key, Server
+  Activity, Eye, Webhook, Key, Server, GitBranch, FolderOpen,
+  Package, Bell, Upload, ListFilter, ClipboardList, Route
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
 type Priority = "critical" | "high" | "medium" | "nice-to-have";
-type Category = "data" | "ai" | "communication" | "payments" | "auth" | "infrastructure" | "analytics" | "compliance";
+type Category = "data" | "ai" | "communication" | "payments" | "auth" | "infrastructure" | "analytics" | "compliance" | "backend";
 
 interface ApiIntegration {
   name: string;
@@ -45,6 +46,7 @@ const categoryConfig: Record<Category, { label: string; icon: React.ElementType;
   infrastructure: { label: "Infrastructure", icon: Server, color: "text-slate-600" },
   analytics: { label: "Analytics & Monitoring", icon: BarChart3, color: "text-indigo-600" },
   compliance: { label: "Compliance & Legal", icon: FileText, color: "text-teal-600" },
+  backend: { label: "Internal Backend APIs", icon: Route, color: "text-pink-600" },
 };
 
 const apis: ApiIntegration[] = [
@@ -285,6 +287,139 @@ const apis: ApiIntegration[] = [
     features: ["File sync", "Shared drives", "Version history", "Permission management", "Search across files"],
     estimatedCost: "Free (API) / $6–$18/mo per user (storage)",
     docsUrl: "https://developers.google.com/drive",
+  },
+  // INTERNAL BACKEND APIs (Edge Functions / Lovable Cloud)
+  {
+    name: "Mandates CRUD API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "critical",
+    icon: ClipboardList,
+    description: "RESTful endpoints for creating, reading, updating, and deleting mandates with criteria filters.",
+    whyNeeded: "The Create Mandate form and Mandates Dashboard currently use mock data. This API persists mandates to the database, enables real-time updates, and powers the live funnel preview with actual matching counts.",
+    features: ["POST /mandates — create", "GET /mandates — list with filters", "PUT /mandates/:id — update criteria", "DELETE /mandates/:id", "GET /mandates/:id/matches — matched companies"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Companies API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "critical",
+    icon: Database,
+    description: "CRUD and search endpoints for company profiles, enrichment data, and M&A scores.",
+    whyNeeded: "Company Profile, Compare, and Pipeline pages all rely on company data. This API stores enriched profiles, calculates M&A scores dynamically, and serves search/filter results for the entire platform.",
+    features: ["GET /companies — search & filter", "GET /companies/:id — full profile", "POST /companies/enrich — trigger enrichment", "GET /companies/:id/scores — M&A breakdown", "PATCH /companies/:id — update fields"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Pipeline / CRM API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "critical",
+    icon: GitBranch,
+    description: "Pipeline stage management, notes, action items, and deal tracking endpoints.",
+    whyNeeded: "The Pipeline/CRM page needs persistent stage transitions, notes, and action items. This API tracks company movement through stages, stores team notes, and manages action item assignments and deadlines.",
+    features: ["PATCH /pipeline/:id/stage — move stages", "POST /pipeline/:id/notes — add notes", "POST /pipeline/:id/actions — add tasks", "GET /pipeline/stats — funnel metrics", "GET /pipeline/export — CSV export"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Activity Timeline API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "high",
+    icon: Activity,
+    description: "Event logging and retrieval for all platform activities — mandate changes, stage moves, notes, meetings.",
+    whyNeeded: "The Activity Timeline and mandate-specific history currently use mock events. This API logs every action as an immutable event, enabling audit trails, team visibility, and compliance reporting.",
+    features: ["POST /activities — log event", "GET /activities — filtered timeline", "GET /activities/mandate/:id — mandate history", "GET /activities/company/:id — company history", "WebSocket — real-time feed"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Watchlist & Alerts API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "high",
+    icon: Eye,
+    description: "Watchlist management and alert configuration for tracked companies and events.",
+    whyNeeded: "The Watchlist page needs to persist watched companies, alert preferences, and trigger notifications when tracked events occur (funding rounds, leadership changes, M&A activity).",
+    features: ["POST /watchlist — add company", "DELETE /watchlist/:id — remove", "PATCH /watchlist/:id/alerts — toggle alerts", "GET /watchlist/events — filtered news feed", "POST /watchlist/triggers — custom alert rules"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Projects & Deliverables API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "high",
+    icon: FolderOpen,
+    description: "Project management, file organization, deliverable tracking, and template management endpoints.",
+    whyNeeded: "Projects and Deliverables pages need persistent storage for project structures, file metadata, deliverable statuses, and reusable templates. Enables team collaboration on deal documentation.",
+    features: ["CRUD /projects", "POST /projects/:id/folders — organize files", "CRUD /deliverables", "GET /templates — list templates", "POST /deliverables/generate — from template"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Notifications API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "high",
+    icon: Bell,
+    description: "In-app notification delivery, read status management, and preference configuration.",
+    whyNeeded: "The notification panel in the header needs real-time notifications. This API manages notification creation from various triggers, delivery across channels (in-app, email, Slack), and user preferences.",
+    features: ["GET /notifications — user notifications", "PATCH /notifications/:id/read", "POST /notifications/mark-all-read", "GET /notifications/preferences", "PUT /notifications/preferences — channel config"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Analytics & Reporting API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "medium",
+    icon: BarChart3,
+    description: "Aggregated metrics, KPI calculations, and report generation for the Analytics dashboard.",
+    whyNeeded: "The Analytics page shows pipeline distribution, deal velocity, and mandate coverage using hardcoded data. This API computes real-time metrics from the database and generates exportable reports.",
+    features: ["GET /analytics/pipeline — stage distribution", "GET /analytics/velocity — deal speed metrics", "GET /analytics/scores — score distributions", "GET /analytics/trends — monthly trends", "POST /analytics/export — PDF/CSV reports"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "File Upload & Storage API",
+    provider: "Internal (Supabase Storage)",
+    category: "backend",
+    priority: "medium",
+    icon: Upload,
+    description: "Secure file upload, storage, and retrieval for deal documents, reports, and attachments.",
+    whyNeeded: "Projects and Deliverables need file uploads (pitch decks, financials, reports). This API handles secure upload to Supabase Storage with access control, virus scanning, and signed URL generation.",
+    features: ["POST /storage/upload — secure upload", "GET /storage/:id — signed download URL", "DELETE /storage/:id — remove file", "GET /storage/project/:id — project files", "POST /storage/bulk — batch upload"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "Search & Filtering API",
+    provider: "Internal (Edge Function + pg_trgm)",
+    category: "backend",
+    priority: "medium",
+    icon: ListFilter,
+    description: "Full-text search across companies, mandates, notes, and deliverables with advanced filtering.",
+    whyNeeded: "Every page has a search bar but no backend search. This API enables fuzzy matching, multi-entity search (companies + mandates + notes), and complex filter combinations for power users.",
+    features: ["GET /search?q= — global search", "POST /search/companies — advanced filters", "GET /search/suggestions — autocomplete", "Full-text + trigram matching", "Faceted filter counts"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
+  },
+  {
+    name: "User & Team Management API",
+    provider: "Internal (Edge Function)",
+    category: "backend",
+    priority: "medium",
+    icon: Users,
+    description: "User profiles, team structures, roles, and permission management.",
+    whyNeeded: "Multi-user collaboration requires team management — assigning mandates to analysts, tracking who made pipeline changes, and controlling access to sensitive deal data based on roles.",
+    features: ["GET /users/me — current profile", "GET /teams — team members", "POST /teams/invite — invite user", "PATCH /users/:id/role — assign role", "GET /users/:id/activity — user audit log"],
+    estimatedCost: "Included (Lovable Cloud)",
+    docsUrl: "#",
   },
 ];
 
