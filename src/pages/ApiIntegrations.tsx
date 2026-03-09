@@ -46,6 +46,7 @@ const categoryConfig: Record<Category, { label: string; icon: React.ElementType;
   infrastructure: { label: "Infrastructure", icon: Server, color: "text-slate-600" },
   analytics: { label: "Analytics & Monitoring", icon: BarChart3, color: "text-indigo-600" },
   compliance: { label: "Compliance & Legal", icon: FileText, color: "text-teal-600" },
+  backend: { label: "Internal Backend APIs", icon: Route, color: "text-pink-600" },
 };
 
 const apis: ApiIntegration[] = [
