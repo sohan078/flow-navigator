@@ -1,6 +1,6 @@
 import {
   Home, FileText, GitBranch, FolderOpen, Package, Eye, HelpCircle,
-  BarChart3, Clock, ArrowLeftRight,
+  BarChart3, Clock, ArrowLeftRight, Plug,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
