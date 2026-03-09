@@ -1,6 +1,6 @@
 import {
   Home, FileText, GitBranch, FolderOpen, Package, Eye, HelpCircle,
-  BarChart3, Clock, ArrowLeftRight,
+  BarChart3, Clock, ArrowLeftRight, Plug,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -20,6 +20,7 @@ const navItems = [
   { title: "Projects", url: "/projects", icon: FolderOpen },
   { title: "Deliverables", url: "/deliverables", icon: Package },
   { title: "Watchlist", url: "/watchlist", icon: Eye },
+  { title: "API Integrations", url: "/api-integrations", icon: Plug },
   { title: "Support", url: "/support", icon: HelpCircle },
 ];
 
