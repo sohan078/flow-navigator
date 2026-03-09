@@ -3,7 +3,8 @@ import {
   Search, Shield, Database, Brain, Mail, CreditCard, FileText,
   Globe, MessageSquare, BarChart3, Users, Zap, Lock, Cloud,
   ArrowUpRight, CheckCircle2, AlertCircle, Star, Layers,
-  Activity, Eye, Webhook, Key, Server
+  Activity, Eye, Webhook, Key, Server, GitBranch, FolderOpen,
+  Package, Bell, Upload, ListFilter, ClipboardList, Route
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
