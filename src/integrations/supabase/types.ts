@@ -14,7 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          capabilities: string[] | null
+          created_at: string
+          customers: string[] | null
+          delivery_geo: string[] | null
+          description: string | null
+          founded: number | null
+          hq: string | null
+          id: string
+          investors: string[] | null
+          logo: string | null
+          ma_score: number | null
+          ma_scores: Json | null
+          management: Json | null
+          name: string
+          partners: string[] | null
+          people: number | null
+          revenue: string | null
+          revenue_geo: string[] | null
+          skills: string[] | null
+          social_links: Json | null
+          status: string
+          updated_at: string
+          verticals: string[] | null
+          website: string | null
+        }
+        Insert: {
+          capabilities?: string[] | null
+          created_at?: string
+          customers?: string[] | null
+          delivery_geo?: string[] | null
+          description?: string | null
+          founded?: number | null
+          hq?: string | null
+          id?: string
+          investors?: string[] | null
+          logo?: string | null
+          ma_score?: number | null
+          ma_scores?: Json | null
+          management?: Json | null
+          name: string
+          partners?: string[] | null
+          people?: number | null
+          revenue?: string | null
+          revenue_geo?: string[] | null
+          skills?: string[] | null
+          social_links?: Json | null
+          status?: string
+          updated_at?: string
+          verticals?: string[] | null
+          website?: string | null
+        }
+        Update: {
+          capabilities?: string[] | null
+          created_at?: string
+          customers?: string[] | null
+          delivery_geo?: string[] | null
+          description?: string | null
+          founded?: number | null
+          hq?: string | null
+          id?: string
+          investors?: string[] | null
+          logo?: string | null
+          ma_score?: number | null
+          ma_scores?: Json | null
+          management?: Json | null
+          name?: string
+          partners?: string[] | null
+          people?: number | null
+          revenue?: string | null
+          revenue_geo?: string[] | null
+          skills?: string[] | null
+          social_links?: Json | null
+          status?: string
+          updated_at?: string
+          verticals?: string[] | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      mandate_activities: {
+        Row: {
+          actor_name: string | null
+          created_at: string
+          description: string
+          id: string
+          mandate_id: string
+          metadata: Json | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          actor_name?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          mandate_id: string
+          metadata?: Json | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          actor_name?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          mandate_id?: string
+          metadata?: Json | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mandate_activities_mandate_id_fkey"
+            columns: ["mandate_id"]
+            isOneToOne: false
+            referencedRelation: "mandates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mandates: {
+        Row: {
+          capabilities: string[] | null
+          created_at: string
+          delivery_geo: string[] | null
+          description: string | null
+          est_revenue: string | null
+          go_to_market: string | null
+          hq: string | null
+          id: string
+          matching_companies: number | null
+          partners: string[] | null
+          people_scale: string | null
+          revenue_geo: string[] | null
+          strategy: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          verticals: string[] | null
+        }
+        Insert: {
+          capabilities?: string[] | null
+          created_at?: string
+          delivery_geo?: string[] | null
+          description?: string | null
+          est_revenue?: string | null
+          go_to_market?: string | null
+          hq?: string | null
+          id?: string
+          matching_companies?: number | null
+          partners?: string[] | null
+          people_scale?: string | null
+          revenue_geo?: string[] | null
+          strategy?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          verticals?: string[] | null
+        }
+        Update: {
+          capabilities?: string[] | null
+          created_at?: string
+          delivery_geo?: string[] | null
+          description?: string | null
+          est_revenue?: string | null
+          go_to_market?: string | null
+          hq?: string | null
+          id?: string
+          matching_companies?: number | null
+          partners?: string[] | null
+          people_scale?: string | null
+          revenue_geo?: string[] | null
+          strategy?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verticals?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
