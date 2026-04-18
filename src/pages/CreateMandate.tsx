@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { strategies, allCapabilities, allPartners, allVerticals, allGeos } from "@/data/mockData";
+import { createMandate } from "@/lib/api/mandates";
+import { listCompanies, matchCompanies } from "@/lib/api/companies";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,8 +76,51 @@ const CreateMandate = () => {
     { label: "Final", value: form.verticals.length ? 156 : 890 },
   ];
 
+  const [submitting, setSubmitting] = useState(false);
+
   const reset = () =>
     setForm({ title: "", strategy: "", capabilities: [], partners: [], verticals: [], revenueGeo: [], deliveryGeo: [], peopleScale: "", estRevenue: "", goToMarket: "", description: "" });
+
+  const submit = async () => {
+    if (!form.title.trim()) {
+      toast({ title: "Title required", description: "Please give the mandate a title.", variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      // Compute matching companies count from the live catalog.
+      const catalog = await listCompanies();
+      const matches = matchCompanies(catalog, {
+        capabilities: form.capabilities,
+        partners: form.partners,
+        verticals: form.verticals,
+        revenue_geo: form.revenueGeo,
+        delivery_geo: form.deliveryGeo,
+      });
+      await createMandate({
+        title: form.title.trim(),
+        strategy: form.strategy || null,
+        capabilities: form.capabilities,
+        partners: form.partners,
+        verticals: form.verticals,
+        revenue_geo: form.revenueGeo,
+        delivery_geo: form.deliveryGeo,
+        people_scale: form.peopleScale || null,
+        est_revenue: form.estRevenue || null,
+        hq: null,
+        go_to_market: form.goToMarket || null,
+        description: form.description || null,
+        matching_companies: matches.length,
+      });
+      toast({ title: "Mandate created", description: `${matches.length} matching companies found.` });
+      navigate("/mandates");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Failed to create mandate";
+      toast({ title: "Error", description: msg, variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -141,11 +187,11 @@ const CreateMandate = () => {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" onClick={reset}>
+                <Button variant="outline" onClick={reset} disabled={submitting}>
                   <RotateCcw className="h-4 w-4 mr-1" /> Reset Form
                 </Button>
-                <Button onClick={() => navigate("/mandates")}>
-                  <Plus className="h-4 w-4 mr-1" /> Create Mandate
+                <Button onClick={submit} disabled={submitting}>
+                  <Plus className="h-4 w-4 mr-1" /> {submitting ? "Creating…" : "Create Mandate"}
                 </Button>
               </div>
             </CardContent>
