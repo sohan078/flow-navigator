@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { mandates } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,19 +13,11 @@ import {
   Plus, Trash2, Edit, Filter, Clock, Target, Settings, Users,
   GitBranch, StickyNote, FileText, Mail, ArrowRight, Calendar,
 } from "lucide-react";
-
-// --- Mandate activity types & data (shared with MandateDetail) ---
-type MandateActivityType = "created" | "criteria_update" | "company_added" | "company_moved" | "note" | "meeting" | "document" | "outreach";
-
-interface MandateActivity {
-  id: string;
-  type: MandateActivityType;
-  title: string;
-  description: string;
-  user: string;
-  timestamp: string;
-  metadata?: Record<string, string>;
-}
+import { toast } from "@/hooks/use-toast";
+import {
+  listMandates, deleteMandates, listMandateActivities,
+  type MandateRecord, type MandateActivityRecord, type MandateActivityType,
+} from "@/lib/api/mandates";
 
 const activityTypeConfig: Record<MandateActivityType, { label: string; icon: React.ElementType; color: string }> = {
   created: { label: "Created", icon: Target, color: "bg-primary/10 text-primary" },
@@ -37,47 +28,6 @@ const activityTypeConfig: Record<MandateActivityType, { label: string; icon: Rea
   meeting: { label: "Meeting", icon: Users, color: "bg-chart-4/10 text-chart-4" },
   document: { label: "Document", icon: FileText, color: "bg-success/10 text-success" },
   outreach: { label: "Outreach", icon: Mail, color: "bg-chart-5/10 text-chart-5" },
-};
-
-const getMandateTimeline = (mandateId: string): MandateActivity[] => {
-  const timelines: Record<string, MandateActivity[]> = {
-    "1": [
-      { id: "m1-1", type: "document", title: "Investment memo drafted", description: "Initial investment memo created for top 5 matching companies", user: "Sarah Johnson", timestamp: "2026-03-07T15:00:00" },
-      { id: "m1-2", type: "company_moved", title: "TechNova moved to Pipeline", description: "TechNova Solutions promoted from Recommended to Pipeline", user: "John Smith", timestamp: "2026-03-07T11:30:00", metadata: { company: "TechNova Solutions", from: "Recommended", to: "Pipeline" } },
-      { id: "m1-3", type: "meeting", title: "Screening call with DataPulse", description: "30-min introductory call with DataPulse Analytics CEO", user: "John Smith", timestamp: "2026-03-06T14:00:00", metadata: { company: "DataPulse Analytics" } },
-      { id: "m1-4", type: "note", title: "Financial review note", description: "TechNova financials reviewed — healthy margins at 22%", user: "Sarah Johnson", timestamp: "2026-03-05T16:30:00", metadata: { company: "TechNova Solutions" } },
-      { id: "m1-5", type: "company_added", title: "3 new companies matched", description: "Algorithm identified 3 new companies matching updated criteria", user: "System", timestamp: "2026-03-05T09:00:00" },
-      { id: "m1-6", type: "criteria_update", title: "Added Snowflake to partners", description: "Snowflake added as required technology partner", user: "John Smith", timestamp: "2026-03-04T10:15:00" },
-      { id: "m1-7", type: "outreach", title: "Outreach to TechNova CEO", description: "Introduction email sent to Sarah Chen, CEO", user: "John Smith", timestamp: "2026-03-03T11:00:00", metadata: { company: "TechNova Solutions" } },
-      { id: "m1-8", type: "criteria_update", title: "Revenue range updated", description: "Revenue range changed from $5M-$30M to $10M-$50M", user: "Sarah Johnson", timestamp: "2026-03-01T14:20:00" },
-      { id: "m1-9", type: "company_added", title: "Initial matching completed", description: "156 companies identified matching mandate criteria", user: "System", timestamp: "2026-02-16T08:00:00" },
-      { id: "m1-10", type: "created", title: "Mandate created", description: "Cloud & Data Analytics Acquisition mandate created", user: "John Smith", timestamp: "2026-02-15T09:30:00" },
-    ],
-    "2": [
-      { id: "m2-1", type: "company_moved", title: "NeuralEdge AI shortlisted", description: "NeuralEdge AI moved to Shortlisted after technical assessment", user: "Sarah Johnson", timestamp: "2026-03-06T16:45:00", metadata: { company: "NeuralEdge AI", from: "Pipeline", to: "Shortlisted" } },
-      { id: "m2-2", type: "document", title: "Term sheet draft prepared", description: "Initial term sheet drafted for NeuralEdge AI", user: "Mike Chen", timestamp: "2026-03-05T15:30:00", metadata: { company: "NeuralEdge AI" } },
-      { id: "m2-3", type: "meeting", title: "Technical deep-dive", description: "3-hour technical assessment with NeuralEdge AI engineering team", user: "Mike Chen", timestamp: "2026-03-04T10:00:00", metadata: { company: "NeuralEdge AI" } },
-      { id: "m2-4", type: "note", title: "AI team assessment", description: "Team is exceptional — 40 ML engineers with strong publications", user: "Mike Chen", timestamp: "2026-03-03T14:00:00", metadata: { company: "NeuralEdge AI" } },
-      { id: "m2-5", type: "outreach", title: "Contacted NeuralEdge CEO", description: "Initial outreach to Dr. Anna Müller", user: "John Smith", timestamp: "2026-02-28T11:30:00", metadata: { company: "NeuralEdge AI" } },
-      { id: "m2-6", type: "criteria_update", title: "Added Hugging Face partnership", description: "Hugging Face added as key partner criteria", user: "Mike Chen", timestamp: "2026-02-25T09:00:00" },
-      { id: "m2-7", type: "company_added", title: "Initial matching completed", description: "89 companies identified matching criteria", user: "System", timestamp: "2026-01-21T08:00:00" },
-      { id: "m2-8", type: "created", title: "Mandate created", description: "European AI Talent Acqui-hire mandate created", user: "Mike Chen", timestamp: "2026-01-20T10:00:00" },
-    ],
-    "3": [
-      { id: "m3-1", type: "meeting", title: "Due diligence call with CyberShield", description: "Technical deep-dive with CyberShield Corp engineering team", user: "Mike Chen", timestamp: "2026-03-04T14:00:00", metadata: { company: "CyberShield Corp" } },
-      { id: "m3-2", type: "note", title: "Market analysis complete", description: "Cybersecurity M&A landscape shows 15B+ in deals in 2025", user: "Sarah Johnson", timestamp: "2026-03-03T10:00:00" },
-      { id: "m3-3", type: "outreach", title: "NDA sent to CyberShield", description: "Mutual NDA sent to CyberShield Corp legal team", user: "John Smith", timestamp: "2026-02-28T16:00:00", metadata: { company: "CyberShield Corp" } },
-      { id: "m3-4", type: "company_added", title: "Initial matching completed", description: "42 cybersecurity companies identified", user: "System", timestamp: "2026-02-02T08:00:00" },
-      { id: "m3-5", type: "created", title: "Mandate created", description: "Cybersecurity Platform Roll-up mandate created", user: "Sarah Johnson", timestamp: "2026-02-01T11:00:00" },
-    ],
-    "4": [
-      { id: "m4-1", type: "note", title: "Regulatory landscape review", description: "APAC regulatory needs further diligence — MAS and OJK requirements", user: "Sarah Johnson", timestamp: "2026-03-06T10:00:00" },
-      { id: "m4-2", type: "outreach", title: "Follow-up with FinCore CEO", description: "Second call with Wei Lin regarding expansion strategy", user: "John Smith", timestamp: "2026-03-03T11:00:00", metadata: { company: "FinCore Technologies" } },
-      { id: "m4-3", type: "company_added", title: "Initial matching completed", description: "67 APAC fintech companies identified", user: "System", timestamp: "2026-03-02T08:00:00" },
-      { id: "m4-4", type: "created", title: "Mandate created", description: "APAC Fintech Expansion mandate created", user: "John Smith", timestamp: "2026-03-01T09:00:00" },
-    ],
-  };
-  return timelines[mandateId] || [];
 };
 
 const formatDate = (ts: string) => new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -95,32 +45,77 @@ const timeAgo = (ts: string) => {
 
 const MandatesDashboard = () => {
   const navigate = useNavigate();
+  const [mandates, setMandates] = useState<MandateRecord[]>([]);
+  const [latestByMandate, setLatestByMandate] = useState<Record<string, MandateActivityRecord | undefined>>({});
+  const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [timelineDialog, setTimelineDialog] = useState<string | null>(null);
+  const [dialogActivities, setDialogActivities] = useState<MandateActivityRecord[]>([]);
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+  const refresh = async () => {
+    setLoading(true);
+    try {
+      const list = await listMandates();
+      setMandates(list);
+      // Fetch latest activity per mandate in parallel.
+      const entries = await Promise.all(
+        list.map(async (m) => {
+          const acts = await listMandateActivities(m.id);
+          return [m.id, acts[0]] as const;
+        })
+      );
+      setLatestByMandate(Object.fromEntries(entries));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Failed to load mandates";
+      toast({ title: "Error", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const funnelSteps = [
-    { label: "Total Universe", value: 12500, color: "bg-primary" },
-    { label: "Geo Filtered", value: 4200, color: "bg-chart-1" },
-    { label: "Vertical Match", value: 1800, color: "bg-chart-2" },
-    { label: "Capability Match", value: 680, color: "bg-chart-3" },
-    { label: "Revenue Fit", value: 354, color: "bg-chart-4" },
-    { label: "Final Matches", value: 156, color: "bg-success" },
-  ];
+  useEffect(() => { refresh(); }, []);
+
+  useEffect(() => {
+    if (!timelineDialog) return;
+    listMandateActivities(timelineDialog).then(setDialogActivities).catch(() => setDialogActivities([]));
+  }, [timelineDialog]);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
+  };
+
+  const handleDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm(`Delete ${selectedIds.length} mandate(s)? This cannot be undone.`)) return;
+    try {
+      await deleteMandates(selectedIds);
+      toast({ title: "Deleted", description: `${selectedIds.length} mandate(s) removed.` });
+      setSelectedIds([]);
+      refresh();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Delete failed";
+      toast({ title: "Error", description: msg, variant: "destructive" });
+    }
+  };
+
+  const funnelSteps = useMemo(() => {
+    const totalMatches = mandates.reduce((sum, m) => sum + (m.matching_companies || 0), 0);
+    return [
+      { label: "Total Universe", value: 12500, color: "bg-primary" },
+      { label: "Geo Filtered", value: 4200, color: "bg-chart-1" },
+      { label: "Vertical Match", value: 1800, color: "bg-chart-2" },
+      { label: "Capability Match", value: 680, color: "bg-chart-3" },
+      { label: "Revenue Fit", value: 354, color: "bg-chart-4" },
+      { label: "Final Matches", value: Math.max(totalMatches, 1), color: "bg-success" },
+    ];
+  }, [mandates]);
 
   const selectedMandate = timelineDialog ? mandates.find((m) => m.id === timelineDialog) : null;
-  const selectedTimeline = timelineDialog ? getMandateTimeline(timelineDialog) : [];
 
-  // Group timeline by date for dialog
-  const groupByDate = (events: MandateActivity[]) => {
-    const groups: Record<string, MandateActivity[]> = {};
+  const groupByDate = (events: MandateActivityRecord[]) => {
+    const groups: Record<string, MandateActivityRecord[]> = {};
     events.forEach((e) => {
-      const date = formatDate(e.timestamp);
+      const date = formatDate(e.created_at);
       if (!groups[date]) groups[date] = [];
       groups[date].push(e);
     });
@@ -136,7 +131,7 @@ const MandatesDashboard = () => {
         </div>
         <div className="flex gap-2">
           {selectedIds.length > 0 && (
-            <Button variant="destructive" size="sm">
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
               <Trash2 className="h-4 w-4 mr-1" /> Delete ({selectedIds.length})
             </Button>
           )}
@@ -146,7 +141,6 @@ const MandatesDashboard = () => {
         </div>
       </div>
 
-      {/* Table */}
       <Card>
         <CardContent className="p-0">
           <Table>
@@ -156,7 +150,7 @@ const MandatesDashboard = () => {
                   <input
                     type="checkbox"
                     className="rounded"
-                    checked={selectedIds.length === mandates.length}
+                    checked={mandates.length > 0 && selectedIds.length === mandates.length}
                     onChange={() =>
                       setSelectedIds(
                         selectedIds.length === mandates.length ? [] : mandates.map((m) => m.id)
@@ -176,9 +170,16 @@ const MandatesDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mandates.map((m) => {
-                const timeline = getMandateTimeline(m.id);
-                const latestActivity = timeline[0];
+              {loading ? (
+                <TableRow><TableCell colSpan={10} className="text-center text-sm text-muted-foreground py-8">Loading…</TableCell></TableRow>
+              ) : mandates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center text-sm text-muted-foreground py-12">
+                    No mandates yet. Click <strong>Create Mandate</strong> to add your first one.
+                  </TableCell>
+                </TableRow>
+              ) : mandates.map((m) => {
+                const latestActivity = latestByMandate[m.id];
                 const latestConfig = latestActivity ? activityTypeConfig[latestActivity.type] : null;
                 return (
                   <TableRow
@@ -196,7 +197,7 @@ const MandatesDashboard = () => {
                     </TableCell>
                     <TableCell className="font-medium">{m.title}</TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="text-xs">{m.strategy}</Badge>
+                      {m.strategy && <Badge variant="secondary" className="text-xs">{m.strategy}</Badge>}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <div className="flex flex-wrap gap-1">
@@ -209,12 +210,12 @@ const MandatesDashboard = () => {
                       </div>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      <span className="text-xs">{m.revenueGeo.join(", ")}</span>
+                      <span className="text-xs">{m.revenue_geo.join(", ")}</span>
                     </TableCell>
-                    <TableCell className="hidden md:table-cell text-xs">{m.peopleScale}</TableCell>
-                    <TableCell className="hidden md:table-cell text-xs">{m.estRevenue}</TableCell>
+                    <TableCell className="hidden md:table-cell text-xs">{m.people_scale}</TableCell>
+                    <TableCell className="hidden md:table-cell text-xs">{m.est_revenue}</TableCell>
                     <TableCell>
-                      <Badge className="bg-success/10 text-success border-0">{m.matchingCompanies}</Badge>
+                      <Badge className="bg-success/10 text-success border-0">{m.matching_companies}</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {latestActivity && latestConfig ? (
@@ -226,7 +227,7 @@ const MandatesDashboard = () => {
                             {latestConfig.label}
                           </Badge>
                           <span className="text-[10px] text-muted-foreground group-hover:text-primary transition-colors truncate max-w-[120px]">
-                            {timeAgo(latestActivity.timestamp)}
+                            {timeAgo(latestActivity.created_at)}
                           </span>
                         </button>
                       ) : (
@@ -236,11 +237,8 @@ const MandatesDashboard = () => {
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <div className="flex gap-1">
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          title="View Activity"
-                          onClick={() => setTimelineDialog(m.id)}
+                          variant="ghost" size="icon" className="h-8 w-8"
+                          title="View Activity" onClick={() => setTimelineDialog(m.id)}
                         >
                           <Clock className="h-4 w-4" />
                         </Button>
@@ -257,7 +255,6 @@ const MandatesDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Funnel */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
@@ -282,7 +279,6 @@ const MandatesDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Activity Timeline Dialog */}
       <Dialog open={!!timelineDialog} onOpenChange={(open) => !open && setTimelineDialog(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
@@ -292,14 +288,24 @@ const MandatesDashboard = () => {
             </DialogTitle>
           </DialogHeader>
           <div className="flex items-center gap-3 text-xs text-muted-foreground border-b border-border pb-3">
-            <span>{selectedTimeline.length} activities</span>
-            <span>·</span>
-            <span>Created {selectedMandate?.createdAt}</span>
-            <span>·</span>
-            <Badge variant="secondary" className="text-[10px]">{selectedMandate?.strategy}</Badge>
+            <span>{dialogActivities.length} activities</span>
+            {selectedMandate && (
+              <>
+                <span>·</span>
+                <span>Created {formatDate(selectedMandate.created_at)}</span>
+              </>
+            )}
+            {selectedMandate?.strategy && (
+              <>
+                <span>·</span>
+                <Badge variant="secondary" className="text-[10px]">{selectedMandate.strategy}</Badge>
+              </>
+            )}
           </div>
           <div className="overflow-y-auto flex-1 pr-1 -mr-1">
-            {groupByDate(selectedTimeline).map(([date, events]) => (
+            {dialogActivities.length === 0 ? (
+              <div className="text-center text-xs text-muted-foreground py-8">No activity yet.</div>
+            ) : groupByDate(dialogActivities).map(([date, events]) => (
               <div key={date} className="mb-4">
                 <div className="flex items-center gap-3 mb-2 sticky top-0 bg-background py-1 z-10">
                   <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
@@ -316,32 +322,19 @@ const MandatesDashboard = () => {
                           <div className={`p-1 rounded-full ${config.color}`}>
                             <Icon className="h-3 w-3" />
                           </div>
-                          {i < events.length - 1 && (
-                            <div className="w-px flex-1 bg-border my-0.5" />
-                          )}
+                          {i < events.length - 1 && <div className="w-px flex-1 bg-border my-0.5" />}
                         </div>
                         <div className="flex-1 pb-3">
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <div className="flex items-center gap-1.5 mb-0.5">
                                 <Badge className={`${config.color} border-0 text-[9px] px-1.5 py-0`}>{config.label}</Badge>
-                                {event.metadata?.company && (
-                                  <span className="text-[10px] text-muted-foreground">· {event.metadata.company}</span>
-                                )}
                               </div>
-                              <p className="text-xs font-medium">{event.title}</p>
-                              <p className="text-[10px] text-muted-foreground mt-0.5">{event.description}</p>
-                              {event.type === "company_moved" && event.metadata && (
-                                <div className="flex items-center gap-1.5 mt-1">
-                                  <Badge variant="outline" className="text-[9px] px-1.5 py-0">{event.metadata.from}</Badge>
-                                  <ArrowRight className="h-2.5 w-2.5 text-muted-foreground" />
-                                  <Badge variant="secondary" className="text-[9px] px-1.5 py-0">{event.metadata.to}</Badge>
-                                </div>
-                              )}
+                              <p className="text-xs font-medium">{event.description}</p>
                             </div>
                             <div className="text-right shrink-0">
-                              <p className="text-[10px] text-muted-foreground">{formatTime(event.timestamp)}</p>
-                              <p className="text-[10px] text-muted-foreground">{event.user}</p>
+                              <p className="text-[10px] text-muted-foreground">{formatTime(event.created_at)}</p>
+                              {event.actor_name && <p className="text-[10px] text-muted-foreground">{event.actor_name}</p>}
                             </div>
                           </div>
                         </div>
@@ -353,7 +346,7 @@ const MandatesDashboard = () => {
             ))}
           </div>
           <div className="border-t border-border pt-3 flex justify-end">
-            <Button size="sm" variant="outline" onClick={() => { setTimelineDialog(null); navigate(`/mandates/${timelineDialog}`); }}>
+            <Button size="sm" variant="outline" onClick={() => { const id = timelineDialog; setTimelineDialog(null); if (id) navigate(`/mandates/${id}`); }}>
               View Full Mandate <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Button>
           </div>
