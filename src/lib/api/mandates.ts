@@ -119,14 +119,16 @@ export async function logMandateActivity(input: {
 
   const { data, error } = await supabase
     .from("mandate_activities")
-    .insert({
-      mandate_id: input.mandate_id,
-      user_id: userData.user.id,
-      type: input.type,
-      description: input.description,
-      metadata: input.metadata ?? {},
-      actor_name: input.actor_name ?? null,
-    })
+    .insert([
+      {
+        mandate_id: input.mandate_id,
+        user_id: userData.user.id,
+        type: input.type,
+        description: input.description,
+        metadata: (input.metadata ?? {}) as never,
+        actor_name: input.actor_name ?? null,
+      },
+    ])
     .select()
     .single();
   if (error) throw error;
