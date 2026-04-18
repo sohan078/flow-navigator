@@ -187,11 +187,11 @@ const CreateMandate = () => {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" onClick={reset}>
+                <Button variant="outline" onClick={reset} disabled={submitting}>
                   <RotateCcw className="h-4 w-4 mr-1" /> Reset Form
                 </Button>
-                <Button onClick={() => navigate("/mandates")}>
-                  <Plus className="h-4 w-4 mr-1" /> Create Mandate
+                <Button onClick={submit} disabled={submitting}>
+                  <Plus className="h-4 w-4 mr-1" /> {submitting ? "Creating…" : "Create Mandate"}
                 </Button>
               </div>
             </CardContent>
